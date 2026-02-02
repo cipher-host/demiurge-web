@@ -3,27 +3,165 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Demiurge Web</title>
+    <title>El Portafolio de Broma de [Tu Nombre]</title>
     <style>
         body {
             background-color: #0a0a0a;
             color: #ffffff;
-            font-family: sans-serif;
+            font-family: 'Press Start 2P', cursive; /* Fuente pixelada para un toque retro */
             display: flex;
+            flex-direction: column; /* Para centrar verticalmente elementos */
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
+            overflow: hidden; /* Para evitar barras de desplazamiento si el video es grande */
         }
-        h1 {
-            border-right: 2px solid #0070f3;
-            padding-right: 15px;
-            animation: blink 0.7s infinite;
+
+        /* Importa una fuente de Google Fonts para el estilo retro */
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+        /* Estilos para los botones principales y cuadros */
+        .main-button, .dialog-box, .social-button {
+            background-color: #0070f3; /* Azul brillante */
+            border: 3px solid #0056b3; /* Borde más oscuro */
+            color: white;
+            padding: 15px 30px;
+            font-size: 20px;
+            cursor: pointer;
+            margin: 10px;
+            border-radius: 5px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-align: center;
+            text-decoration: none; /* Para enlaces */
+            display: block; /* Para que ocupen su propio espacio */
         }
-        @keyframes blink { 50% { border-color: transparent; } }
+
+        .main-button:hover, .dialog-box:hover, .social-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0, 112, 243, 0.4);
+        }
+
+        /* Contenedor de los cuadros que aparecen */
+        .popup-container {
+            display: flex; /* Para poner los cuadros "Redes" y "Video" uno al lado del otro */
+            flex-wrap: wrap; /* Si la pantalla es pequeña, se irán abajo */
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .dialog-box {
+            min-width: 180px; /* Ancho mínimo para los cuadros */
+            height: 80px; /* Alto fijo */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+        }
+
+        /* Contenedor de los botones de redes sociales */
+        .social-links {
+            display: flex; /* Para poner los botones de redes uno al lado del otro */
+            flex-direction: column; /* O uno debajo del otro */
+            margin-top: 10px;
+        }
+
+        .social-button {
+            background-color: #e6007a; /* Rosa TikTok */
+            border-color: #b3005c;
+            font-size: 16px;
+            padding: 10px 20px;
+            margin: 5px;
+        }
+        .social-button.roblox {
+            background-color: #4a4a4a; /* Gris Roblox */
+            border-color: #333333;
+        }
+
+        /* Estilo para el video */
+        #randomVideo {
+            display: none; /* Oculto por defecto */
+            margin-top: 20px;
+            max-width: 90vw; /* Que no sea más ancho que la pantalla */
+            max-height: 80vh; /* Que no sea más alto que la pantalla */
+            border: 3px solid #0070f3;
+        }
+
+        /* Clases para ocultar/mostrar elementos */
+        .hidden {
+            display: none !important;
+        }
     </style>
 </head>
 <body>
-    <h1>DEMIDURGE</h1>
+
+    <button id="mainBtn" class="main-button">
+        [Tu Nombre]
+    </button>
+
+    <div id="popupContainer" class="popup-container hidden">
+        <button id="redesBtn" class="dialog-box">
+            Redes
+        </button>
+        <button id="videoBtn" class="dialog-box">
+            Video Random
+        </button>
+    </div>
+
+    <div id="socialLinks" class="social-links hidden">
+        <a id="tiktokBtn" href="https://www.tiktok.com/es-419/" target="_blank" class="social-button">TikTok</a>
+        <a id="robloxBtn" href="https://www.roblox.com/es/login" target="_blank" class="social-button roblox">Roblox</a>
+    </div>
+
+    <video id="randomVideo" controls muted loop>
+        <source src="tu-video-random.mp4" type="video/mp4">
+        Tu navegador no soporta el tag de video.
+    </video>
+
+    <script>
+        // Obtenemos los elementos de la página
+        const mainBtn = document.getElementById('mainBtn');
+        const popupContainer = document.getElementById('popupContainer');
+        const redesBtn = document.getElementById('redesBtn');
+        const videoBtn = document.getElementById('videoBtn');
+        const socialLinks = document.getElementById('socialLinks');
+        const randomVideo = document.getElementById('randomVideo');
+
+        // Cuando tocas el botón principal (tu nombre)
+        mainBtn.addEventListener('click', () => {
+            // Alternar la visibilidad de los cuadros "Redes" y "Video Random"
+            popupContainer.classList.toggle('hidden');
+
+            // Ocultar las redes sociales y el video si ya estaban mostrados
+            socialLinks.classList.add('hidden');
+            randomVideo.classList.add('hidden');
+            randomVideo.pause(); // Pausar el video si se oculta
+        });
+
+        // Cuando tocas el botón "Redes"
+        redesBtn.addEventListener('click', () => {
+            // Alternar la visibilidad de los botones de TikTok y Roblox
+            socialLinks.classList.toggle('hidden');
+
+            // Ocultar el video si estaba mostrado
+            randomVideo.classList.add('hidden');
+            randomVideo.pause();
+        });
+
+        // Cuando tocas el botón "Video Random"
+        videoBtn.addEventListener('click', () => {
+            // Alternar la visibilidad del video
+            randomVideo.classList.toggle('hidden');
+            // Si el video está visible, reproducirlo; si se oculta, pausarlo
+            if (!randomVideo.classList.contains('hidden')) {
+                randomVideo.play();
+            } else {
+                randomVideo.pause();
+            }
+            // Ocultar las redes sociales si estaban mostradas
+            socialLinks.classList.add('hidden');
+        });
+    </script>
 </body>
-</html>
+</html>            
