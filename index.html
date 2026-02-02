@@ -222,6 +222,70 @@
             animation: fadeInUp 1.5s ease 0.5s forwards, bounce 2s ease-in-out 1.5s infinite;
         }
 
+        /* Miku Section */
+        .miku-section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 1s ease;
+            padding: 2rem;
+        }
+
+        .miku-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .miku-container {
+            position: relative;
+            text-align: center;
+        }
+
+        .miku-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2rem, 6vw, 4rem);
+            font-weight: 400;
+            letter-spacing: 0.2em;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--text-primary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: glow 3s ease-in-out infinite;
+        }
+
+        .miku-gif {
+            width: clamp(250px, 50vw, 400px);
+            height: auto;
+            border-radius: 20px;
+            border: 2px solid var(--accent);
+            box-shadow: 0 0 50px var(--accent-glow);
+            animation: float-miku 3s ease-in-out infinite;
+        }
+
+        @keyframes float-miku {
+            0%, 100% {
+                transform: translateY(0px);
+                box-shadow: 0 0 50px var(--accent-glow);
+            }
+            50% {
+                transform: translateY(-20px);
+                box-shadow: 0 20px 60px var(--accent-glow);
+            }
+        }
+
+        .miku-text {
+            margin-top: 2rem;
+            font-size: clamp(0.9rem, 2vw, 1.2rem);
+            letter-spacing: 0.3em;
+            color: var(--text-secondary);
+            font-weight: 300;
+        }
+
         .nav-title {
             font-family: 'Cormorant Garamond', serif;
             font-size: clamp(1.5rem, 4vw, 2.5rem);
@@ -401,6 +465,15 @@
         </div>
     </div>
 
+    <!-- Miku Dancing Section -->
+    <div class="miku-section" id="mikuSection">
+        <div class="miku-container">
+            <h2 class="miku-title">VIBE CHECK</h2>
+            <img src="https://media.tenor.com/CpdZHSgt9-YAAAAd/default-dance-fortnite-dance.gif" alt="Miku Dancing" class="miku-gif">
+            <p class="miku-text">FEELING THE RHYTHM</p>
+        </div>
+    </div>
+
     <script>
         // Particle generation
         const particlesContainer = document.getElementById('particles');
@@ -457,6 +530,24 @@
                 link.style.letterSpacing = '0.3em';
             });
         });
+
+        // Scroll detection for Miku section
+        const mikuSection = document.getElementById('mikuSection');
+        
+        const observerOptions = {
+            threshold: 0.3,
+            rootMargin: '0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        observer.observe(mikuSection);
     </script>
 </body>
 </html>
