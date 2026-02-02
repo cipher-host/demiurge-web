@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OKUMURA | DIGITAL VOID</title>
+    <title>OKUMURA ◬ PORTFOLIO</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -15,69 +15,91 @@
         }
 
         :root {
-            --neon-cyan: #00ffff;
-            --neon-pink: #ff00ff;
-            --neon-blue: #0099ff;
-            --dark-bg: #000000;
-            --grid-color: rgba(0, 255, 255, 0.1);
+            --primary: #FF6B35;
+            --secondary: #F7931E;
+            --accent: #FDC830;
+            --dark: #1a1a1a;
+            --light: #f5f5f5;
+            --shadow: rgba(255, 107, 53, 0.3);
         }
 
         body {
-            background: var(--dark-bg);
-            color: var(--neon-cyan);
-            font-family: 'Share Tech Mono', monospace;
+            background: var(--light);
+            color: var(--dark);
+            font-family: 'DM Sans', sans-serif;
             overflow-x: hidden;
-            cursor: crosshair;
         }
 
-        /* Cyberpunk Grid Background */
-        .grid-bg {
+        /* Animated Gradient Background */
+        .bg-gradient {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: 
-                linear-gradient(var(--grid-color) 1px, transparent 1px),
-                linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
-            background-size: 50px 50px;
-            animation: gridScroll 20s linear infinite;
+            background: linear-gradient(45deg, 
+                var(--light) 0%, 
+                #fff5e6 25%,
+                #ffe6cc 50%,
+                #ffddaa 75%,
+                var(--light) 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
             z-index: 0;
         }
 
-        @keyframes gridScroll {
-            0% {
-                transform: perspective(500px) rotateX(60deg) translateY(0);
-            }
-            100% {
-                transform: perspective(500px) rotateX(60deg) translateY(50px);
-            }
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
         }
 
-        /* Scanline Effect */
-        .scanline {
+        /* Floating Shapes */
+        .shape {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(
-                to bottom,
-                transparent 50%,
-                rgba(0, 255, 255, 0.05) 50%
-            );
-            background-size: 100% 4px;
-            animation: scan 8s linear infinite;
-            pointer-events: none;
-            z-index: 999;
+            border-radius: 50%;
+            opacity: 0.1;
+            animation: float 20s infinite;
         }
 
-        @keyframes scan {
-            0% {
-                transform: translateY(0);
+        .shape1 {
+            width: 300px;
+            height: 300px;
+            background: var(--primary);
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .shape2 {
+            width: 200px;
+            height: 200px;
+            background: var(--secondary);
+            top: 60%;
+            right: 10%;
+            animation-delay: 5s;
+        }
+
+        .shape3 {
+            width: 250px;
+            height: 250px;
+            background: var(--accent);
+            bottom: 10%;
+            left: 50%;
+            animation-delay: 10s;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translate(0, 0) rotate(0deg);
             }
-            100% {
-                transform: translateY(100%);
+            25% {
+                transform: translate(50px, -50px) rotate(90deg);
+            }
+            50% {
+                transform: translate(-30px, 30px) rotate(180deg);
+            }
+            75% {
+                transform: translate(40px, 40px) rotate(270deg);
             }
         }
 
@@ -88,459 +110,490 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            justify-content: center;
             align-items: center;
             padding: 2rem;
         }
 
-        /* Glitch Title */
-        .glitch-wrapper {
-            position: relative;
-            margin-top: 15vh;
+        /* Hero Section with 3D Effect */
+        .hero {
+            text-align: center;
+            perspective: 1000px;
         }
 
-        .glitch {
-            font-family: 'Orbitron', sans-serif;
-            font-size: clamp(3rem, 12vw, 10rem);
-            font-weight: 900;
+        .title-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 2rem;
+        }
+
+        .title {
+            font-family: 'Space Mono', monospace;
+            font-size: clamp(4rem, 15vw, 12rem);
+            font-weight: 700;
+            color: var(--dark);
+            letter-spacing: -0.05em;
+            line-height: 0.9;
+            position: relative;
+            display: inline-block;
+            transform-style: preserve-3d;
+            animation: titleReveal 2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            opacity: 0;
+        }
+
+        @keyframes titleReveal {
+            0% {
+                opacity: 0;
+                transform: translateY(100px) rotateX(-90deg);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) rotateX(0deg);
+            }
+        }
+
+        .title-shadow {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-family: 'Space Mono', monospace;
+            font-size: clamp(4rem, 15vw, 12rem);
+            font-weight: 700;
+            color: var(--primary);
+            letter-spacing: -0.05em;
+            line-height: 0.9;
+            z-index: -1;
+            opacity: 0.3;
+        }
+
+        .subtitle {
+            font-size: clamp(1rem, 2.5vw, 1.8rem);
+            font-weight: 500;
+            color: var(--primary);
+            letter-spacing: 0.2em;
             text-transform: uppercase;
-            position: relative;
-            color: var(--neon-cyan);
-            letter-spacing: 0.1em;
-            animation: glitch-main 3s infinite;
-            text-shadow: 
-                0 0 10px var(--neon-cyan),
-                0 0 20px var(--neon-cyan),
-                0 0 30px var(--neon-cyan);
-            cursor: pointer;
-            user-select: none;
+            margin-bottom: 4rem;
+            opacity: 0;
+            animation: fadeInUp 1.5s ease 0.5s forwards;
         }
 
-        .glitch::before,
-        .glitch::after {
-            content: 'OKUMURA';
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+        }
+
+        /* Brutalist Cards */
+        .cards-container {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 3rem;
+            opacity: 0;
+            animation: fadeInUp 1.5s ease 1s forwards;
+        }
+
+        .card {
+            position: relative;
+            width: 280px;
+            height: 180px;
+            background: white;
+            border: 4px solid var(--dark);
+            box-shadow: 10px 10px 0 var(--dark);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
             position: absolute;
             top: 0;
-            left: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(255, 107, 53, 0.3), 
+                transparent);
+            transition: left 0.5s;
+        }
+
+        .card:hover::before {
+            left: 100%;
+        }
+
+        .card:hover {
+            transform: translate(-5px, -5px);
+            box-shadow: 15px 15px 0 var(--primary);
+        }
+
+        .card:active {
+            transform: translate(5px, 5px);
+            box-shadow: 5px 5px 0 var(--dark);
+        }
+
+        .card-content {
+            padding: 2rem;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card-title {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .card-icon {
+            font-size: 3rem;
+            align-self: flex-end;
+            filter: grayscale(100%);
+            transition: filter 0.3s;
+        }
+
+        .card:hover .card-icon {
+            filter: grayscale(0%);
+        }
+
+        .card-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
             width: 100%;
             height: 100%;
         }
 
-        .glitch::before {
-            color: var(--neon-pink);
-            animation: glitch-before 2s infinite;
-            clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
-            text-shadow: 
-                -2px 0 var(--neon-pink),
-                0 0 20px var(--neon-pink);
-        }
-
-        .glitch::after {
-            color: var(--neon-blue);
-            animation: glitch-after 2.5s infinite;
-            clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%);
-            text-shadow: 
-                2px 0 var(--neon-blue),
-                0 0 20px var(--neon-blue);
-        }
-
-        @keyframes glitch-main {
-            0%, 90%, 100% {
-                transform: translate(0);
-            }
-            92%, 96% {
-                transform: translate(-2px, 2px);
-            }
-            94%, 98% {
-                transform: translate(2px, -2px);
-            }
-        }
-
-        @keyframes glitch-before {
-            0%, 90%, 100% {
-                transform: translate(0);
-            }
-            91% {
-                transform: translate(-5px, -5px);
-            }
-            93% {
-                transform: translate(5px, 5px);
-            }
-        }
-
-        @keyframes glitch-after {
-            0%, 90%, 100% {
-                transform: translate(0);
-            }
-            92% {
-                transform: translate(5px, -5px);
-            }
-            94% {
-                transform: translate(-5px, 5px);
-            }
-        }
-
-        .subtitle {
-            font-family: 'Orbitron', sans-serif;
-            font-size: clamp(0.8rem, 2vw, 1.5rem);
-            letter-spacing: 0.5em;
-            text-align: center;
-            margin-top: 1rem;
-            color: var(--neon-pink);
-            opacity: 0;
-            animation: fadeIn 2s ease 1s forwards;
-            text-shadow: 0 0 10px var(--neon-pink);
-        }
-
-        @keyframes fadeIn {
-            to {
-                opacity: 1;
-            }
-        }
-
-        /* Terminal Box */
-        .terminal {
-            margin-top: 5rem;
-            width: 90%;
+        /* Geometric Divider */
+        .divider {
+            width: 100%;
             max-width: 600px;
-            background: rgba(0, 0, 0, 0.8);
-            border: 2px solid var(--neon-cyan);
-            border-radius: 5px;
-            padding: 1.5rem;
-            box-shadow: 
-                0 0 20px rgba(0, 255, 255, 0.5),
-                inset 0 0 20px rgba(0, 255, 255, 0.1);
-            opacity: 0;
-            animation: fadeIn 2s ease 2s forwards;
-        }
-
-        .terminal-header {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 1rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 1px solid var(--grid-color);
-        }
-
-        .terminal-button {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-        }
-
-        .btn-red { background: #ff5f56; }
-        .btn-yellow { background: #ffbd2e; }
-        .btn-green { background: #27c93f; }
-
-        .terminal-content {
-            font-size: clamp(0.8rem, 1.5vw, 1rem);
-            line-height: 1.8;
-        }
-
-        .command-line {
-            margin: 0.5rem 0;
-            opacity: 0;
-            animation: typeIn 0.5s ease forwards;
-        }
-
-        .command-line:nth-child(1) { animation-delay: 2.5s; }
-        .command-line:nth-child(2) { animation-delay: 3s; }
-        .command-line:nth-child(3) { animation-delay: 3.5s; }
-
-        @keyframes typeIn {
-            to {
-                opacity: 1;
-            }
-        }
-
-        .prompt {
-            color: var(--neon-pink);
-        }
-
-        .link-item {
-            display: inline-block;
-            margin-left: 1rem;
-            color: var(--neon-cyan);
-            text-decoration: none;
+            height: 4px;
+            background: var(--dark);
+            margin: 5rem auto;
             position: relative;
-            transition: all 0.3s ease;
-            padding: 0.3rem 0.8rem;
-            border: 1px solid transparent;
+            opacity: 0;
+            animation: fadeInUp 1.5s ease 1.5s forwards;
         }
 
-        .link-item:hover {
-            color: var(--neon-pink);
-            border: 1px solid var(--neon-pink);
-            text-shadow: 0 0 10px var(--neon-pink);
-            transform: translateX(5px);
+        .divider::before,
+        .divider::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: var(--primary);
+            transform: rotate(45deg);
+            top: -8px;
         }
 
-        .link-item::before {
-            content: '> ';
+        .divider::before {
+            left: -10px;
         }
 
-        /* Miku Section */
-        .miku-zone {
-            margin-top: 5rem;
+        .divider::after {
+            right: -10px;
+        }
+
+        /* Info Section */
+        .info-section {
             text-align: center;
+            max-width: 600px;
+            margin-top: 3rem;
             opacity: 0;
-            animation: fadeIn 2s ease 4s forwards;
+            animation: fadeInUp 1.5s ease 2s forwards;
         }
 
-        .miku-title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: clamp(1.5rem, 5vw, 3rem);
+        .info-title {
+            font-family: 'Space Mono', monospace;
+            font-size: clamp(2rem, 5vw, 3rem);
             font-weight: 700;
-            color: var(--neon-cyan);
-            text-shadow: 
-                0 0 10px var(--neon-cyan),
-                0 0 20px var(--neon-cyan);
-            margin-bottom: 2rem;
-            animation: pulse 2s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% {
-                text-shadow: 
-                    0 0 10px var(--neon-cyan),
-                    0 0 20px var(--neon-cyan);
-            }
-            50% {
-                text-shadow: 
-                    0 0 20px var(--neon-cyan),
-                    0 0 40px var(--neon-cyan),
-                    0 0 60px var(--neon-cyan);
-            }
-        }
-
-        .miku-container {
+            color: var(--dark);
+            margin-bottom: 1.5rem;
             position: relative;
             display: inline-block;
         }
 
-        .miku-frame {
-            width: clamp(250px, 60vw, 450px);
-            height: auto;
-            border: 3px solid var(--neon-cyan);
-            border-radius: 10px;
-            box-shadow: 
-                0 0 30px var(--neon-cyan),
-                0 0 60px var(--neon-blue),
-                inset 0 0 20px rgba(0, 255, 255, 0.1);
-            animation: frameGlow 3s ease-in-out infinite;
-            filter: hue-rotate(0deg);
-            transition: filter 0.3s ease;
+        .info-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
         }
 
-        .miku-frame:hover {
-            filter: hue-rotate(90deg);
-            animation: frameSpin 1s ease-in-out;
+        .info-text {
+            font-size: clamp(1rem, 2vw, 1.2rem);
+            line-height: 1.8;
+            color: var(--dark);
+            margin-bottom: 2rem;
         }
 
-        @keyframes frameGlow {
-            0%, 100% {
-                box-shadow: 
-                    0 0 30px var(--neon-cyan),
-                    0 0 60px var(--neon-blue);
-            }
-            50% {
-                box-shadow: 
-                    0 0 50px var(--neon-pink),
-                    0 0 100px var(--neon-cyan);
-            }
-        }
-
-        @keyframes frameSpin {
-            0% { transform: rotateY(0deg); }
-            50% { transform: rotateY(180deg); }
-            100% { transform: rotateY(360deg); }
+        .badge-container {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
         .badge {
             display: inline-block;
-            margin-top: 1rem;
-            padding: 0.5rem 1.5rem;
-            background: rgba(0, 255, 255, 0.1);
-            border: 2px solid var(--neon-cyan);
-            border-radius: 20px;
-            font-family: 'Orbitron', sans-serif;
-            letter-spacing: 0.2em;
+            padding: 0.8rem 1.5rem;
+            background: white;
+            border: 3px solid var(--dark);
+            font-family: 'Space Mono', monospace;
+            font-weight: 700;
             text-transform: uppercase;
             font-size: 0.9rem;
-            animation: badgePulse 2s ease-in-out infinite;
+            letter-spacing: 0.1em;
+            transition: all 0.3s;
+            position: relative;
         }
 
-        @keyframes badgePulse {
-            0%, 100% {
-                transform: scale(1);
-                border-color: var(--neon-cyan);
-            }
-            50% {
-                transform: scale(1.05);
-                border-color: var(--neon-pink);
-            }
+        .badge::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            right: -6px;
+            width: 100%;
+            height: 100%;
+            background: var(--primary);
+            z-index: -1;
+            transition: all 0.3s;
+        }
+
+        .badge:hover::after {
+            bottom: -10px;
+            right: -10px;
         }
 
         /* Footer */
         .footer {
-            margin-top: 5rem;
-            margin-bottom: 2rem;
+            margin-top: 8rem;
             text-align: center;
-            font-size: 0.8rem;
-            color: var(--grid-color);
+            font-family: 'Space Mono', monospace;
+            font-size: 0.9rem;
+            color: var(--dark);
             opacity: 0;
-            animation: fadeIn 2s ease 5s forwards;
+            animation: fadeInUp 1.5s ease 2.5s forwards;
         }
 
-        .footer::before {
-            content: '[ ';
-            color: var(--neon-cyan);
+        .footer-symbol {
+            display: inline-block;
+            margin: 0 0.5rem;
+            color: var(--primary);
+            font-size: 1.2rem;
+            animation: rotate 4s linear infinite;
         }
 
-        .footer::after {
-            content: ' ]';
-            color: var(--neon-cyan);
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
 
         /* Responsive */
         @media (max-width: 768px) {
-            .glitch {
-                letter-spacing: 0.05em;
+            .cards-container {
+                gap: 1.5rem;
             }
-            
-            .terminal {
-                width: 95%;
-                padding: 1rem;
+
+            .card {
+                width: 100%;
+                max-width: 320px;
+            }
+
+            .shape {
+                opacity: 0.05;
             }
         }
 
-        /* Custom Cursor Trail */
-        .cursor-trail {
-            position: fixed;
-            width: 20px;
-            height: 20px;
+        /* Custom Cursor */
+        .cursor-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--primary);
             border-radius: 50%;
-            border: 2px solid var(--neon-cyan);
+            position: fixed;
             pointer-events: none;
             z-index: 9999;
-            transition: all 0.1s ease;
+            transition: transform 0.15s ease;
+            mix-blend-mode: difference;
+        }
+
+        .cursor-outline {
+            width: 40px;
+            height: 40px;
+            border: 2px solid var(--primary);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.15s ease;
             mix-blend-mode: difference;
         }
     </style>
 </head>
 <body>
-    <div class="grid-bg"></div>
-    <div class="scanline"></div>
-    <div class="cursor-trail"></div>
+    <div class="bg-gradient"></div>
+    <div class="shape shape1"></div>
+    <div class="shape shape2"></div>
+    <div class="shape shape3"></div>
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
 
     <div class="container">
-        <!-- Hero Section -->
-        <div class="glitch-wrapper">
-            <h1 class="glitch" data-text="OKUMURA">OKUMURA</h1>
-            <p class="subtitle">// DIGITAL VOID EXPLORER //</p>
+        <!-- Hero -->
+        <div class="hero">
+            <div class="title-container">
+                <div class="title-shadow">OKUMURA</div>
+                <h1 class="title">OKUMURA</h1>
+            </div>
+            <p class="subtitle">CREATIVE DEVELOPER</p>
         </div>
 
-        <!-- Terminal Section -->
-        <div class="terminal">
-            <div class="terminal-header">
-                <span class="terminal-button btn-red"></span>
-                <span class="terminal-button btn-yellow"></span>
-                <span class="terminal-button btn-green"></span>
+        <!-- Cards -->
+        <div class="cards-container">
+            <div class="card">
+                <a href="https://www.tiktok.com/@okumura.._" target="_blank" class="card-link">
+                    <div class="card-content">
+                        <h3 class="card-title">TIKTOK</h3>
+                        <div class="card-icon">📱</div>
+                    </div>
+                </a>
             </div>
-            <div class="terminal-content">
-                <div class="command-line">
-                    <span class="prompt">root@okumura:~$</span> ./initialize_links.sh
-                </div>
-                <div class="command-line">
-                    <span class="prompt">></span> Loading social portals...
-                    <a href="https://www.tiktok.com/@okumura.._" target="_blank" class="link-item">TikTok_Portal</a>
-                </div>
-                <div class="command-line">
-                    <span class="prompt">></span> Establishing connection...
-                    <a href="https://www.roblox.com/es/users/4060396620/profile" target="_blank" class="link-item">Roblox_Gateway</a>
-                </div>
+
+            <div class="card">
+                <a href="https://www.roblox.com/es/users/4060396620/profile" target="_blank" class="card-link">
+                    <div class="card-content">
+                        <h3 class="card-title">ROBLOX</h3>
+                        <div class="card-icon">🎮</div>
+                    </div>
+                </a>
             </div>
         </div>
 
-        <!-- Miku Section -->
-        <div class="miku-zone">
-            <h2 class="miku-title">&lt; VIRTUAL IDOL DETECTED &gt;</h2>
-            <div class="miku-container">
-                <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" 
-                     alt="Miku Dancing" 
-                     class="miku-frame"
-                     onload="this.src='https://media.tenor.com/CpdZHSgt9-YAAAAd/default-dance-fortnite-dance.gif'">
+        <!-- Divider -->
+        <div class="divider"></div>
+
+        <!-- Info Section -->
+        <div class="info-section">
+            <h2 class="info-title">ABOUT</h2>
+            <p class="info-text">
+                Explorando el mundo digital. Creando experiencias únicas. 
+                Siempre buscando nuevas formas de expresión.
+            </p>
+            <div class="badge-container">
+                <span class="badge">CREATOR</span>
+                <span class="badge">GAMER</span>
+                <span class="badge">DESIGNER</span>
             </div>
-            <div class="badge">VIBE: ACTIVATED</div>
         </div>
 
         <!-- Footer -->
         <div class="footer">
-            OKUMURA.EXE // INITIALIZED 2026 // SYSTEM ONLINE
+            OKUMURA
+            <span class="footer-symbol">◬</span>
+            2026
+            <span class="footer-symbol">◬</span>
+            PORTFOLIO
         </div>
     </div>
 
     <script>
-        // Custom cursor trail
-        const cursorTrail = document.querySelector('.cursor-trail');
+        // Custom Cursor
+        const cursorDot = document.querySelector('.cursor-dot');
+        const cursorOutline = document.querySelector('.cursor-outline');
+
         let mouseX = 0, mouseY = 0;
-        let cursorX = 0, cursorY = 0;
+        let outlineX = 0, outlineY = 0;
 
         document.addEventListener('mousemove', (e) => {
             mouseX = e.clientX;
             mouseY = e.clientY;
+            
+            cursorDot.style.left = mouseX + 'px';
+            cursorDot.style.top = mouseY + 'px';
         });
 
-        function animateCursor() {
-            cursorX += (mouseX - cursorX) * 0.2;
-            cursorY += (mouseY - cursorY) * 0.2;
-            cursorTrail.style.left = cursorX + 'px';
-            cursorTrail.style.top = cursorY + 'px';
-            requestAnimationFrame(animateCursor);
+        function animateOutline() {
+            outlineX += (mouseX - outlineX) * 0.2;
+            outlineY += (mouseY - outlineY) * 0.2;
+            
+            cursorOutline.style.left = (outlineX - 20) + 'px';
+            cursorOutline.style.top = (outlineY - 20) + 'px';
+            
+            requestAnimationFrame(animateOutline);
         }
-        animateCursor();
+        animateOutline();
 
-        // Glitch title interaction
-        const glitchTitle = document.querySelector('.glitch');
-        glitchTitle.addEventListener('click', () => {
-            glitchTitle.style.animation = 'none';
-            setTimeout(() => {
-                glitchTitle.style.animation = 'glitch-main 0.3s';
-            }, 10);
-        });
-
-        // Link hover sound effect
-        const links = document.querySelectorAll('.link-item');
-        links.forEach(link => {
-            link.addEventListener('mouseenter', () => {
-                link.style.transform = 'translateX(10px) scale(1.1)';
+        // Card Interactions
+        const cards = document.querySelectorAll('.card');
+        cards.forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                cursorOutline.style.width = '60px';
+                cursorOutline.style.height = '60px';
+                cursorOutline.style.borderColor = 'var(--primary)';
+                cursorOutline.style.borderWidth = '3px';
             });
-            link.addEventListener('mouseleave', () => {
-                link.style.transform = 'translateX(0) scale(1)';
+            
+            card.addEventListener('mouseleave', () => {
+                cursorOutline.style.width = '40px';
+                cursorOutline.style.height = '40px';
+                cursorOutline.style.borderWidth = '2px';
             });
         });
 
-        // Random glitch effect on scroll
-        let lastScroll = 0;
-        window.addEventListener('scroll', () => {
-            const currentScroll = window.pageYOffset;
-            if (Math.abs(currentScroll - lastScroll) > 100) {
-                if (Math.random() > 0.7) {
-                    document.body.style.filter = 'hue-rotate(30deg)';
-                    setTimeout(() => {
-                        document.body.style.filter = 'none';
-                    }, 100);
-                }
-                lastScroll = currentScroll;
-            }
+        // Title Interaction
+        const title = document.querySelector('.title');
+        title.addEventListener('mouseenter', () => {
+            title.style.color = 'var(--primary)';
+        });
+        
+        title.addEventListener('mouseleave', () => {
+            title.style.color = 'var(--dark)';
         });
 
-        // Miku frame interaction
-        const mikuFrame = document.querySelector('.miku-frame');
-        mikuFrame.addEventListener('click', () => {
-            mikuFrame.style.animation = 'frameSpin 1s ease-in-out';
-            setTimeout(() => {
-                mikuFrame.style.animation = 'frameGlow 3s ease-in-out infinite';
-            }, 1000);
+        // Parallax Effect
+        document.addEventListener('mousemove', (e) => {
+            const shapes = document.querySelectorAll('.shape');
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+            
+            shapes.forEach((shape, index) => {
+                const speed = (index + 1) * 20;
+                const xOffset = (x - 0.5) * speed;
+                const yOffset = (y - 0.5) * speed;
+                
+                shape.style.transform = `translate(${xOffset}px, ${yOffset}px)`;
+            });
+        });
+
+        // Random color change on badge hover
+        const badges = document.querySelectorAll('.badge');
+        const colors = ['var(--primary)', 'var(--secondary)', 'var(--accent)'];
+        
+        badges.forEach(badge => {
+            badge.addEventListener('mouseenter', () => {
+                const randomColor = colors[Math.floor(Math.random() * colors.length)];
+                badge.style.borderColor = randomColor;
+            });
+            
+            badge.addEventListener('mouseleave', () => {
+                badge.style.borderColor = 'var(--dark)';
+            });
         });
     </script>
 </body>
