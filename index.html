@@ -3,100 +3,116 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portafolio Troll</title>
+    <title>Portafolio de [Tu Nombre]</title>
     <style>
-        /* Video de fondo que cubre toda la pantalla */
-        #bgVideo {
-            position: fixed;
-            right: 0;
-            bottom: 0;
-            min-width: 100%;
-            min-height: 100%;
-            z-index: -1; /* Lo manda al fondo de todo */
-            filter: brightness(0.5); /* Lo oscurece un poco para que se vea el texto */
-            object-fit: cover;
-        }
-
         body {
-            margin: 0;
+            background-color: #0a0a0a;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            color: white;
-            font-family: sans-serif;
+            margin: 0;
             overflow: hidden;
+            text-align: center;
         }
 
-        .main-button {
-            padding: 20px 40px;
+        /* Botón Principal (Tu Nombre) */
+        .main-btn {
+            background: none;
+            border: 2px solid #0070f3;
+            color: #0070f3;
+            padding: 15px 30px;
             font-size: 2rem;
-            background: #0070f3;
-            border: none;
-            color: white;
             cursor: pointer;
-            border-radius: 10px;
-            z-index: 10;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            transition: 0.3s;
+        }
+
+        .main-btn:hover {
+            background: #0070f3;
+            color: white;
+            box-shadow: 0 0 20px #0070f3;
+        }
+
+        /* Contenedor de los dos cuadros */
+        .menu-container {
+            display: none;
+            margin-top: 30px;
+            gap: 20px;
+        }
+
+        .card {
+            background: #111;
+            border: 1px solid #333;
+            padding: 20px;
+            width: 150px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .card:hover {
+            border-color: #0070f3;
+            transform: scale(1.05);
+        }
+
+        /* Botones de Redes */
+        .social-btns {
+            display: none;
+            margin-top: 20px;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .social-link {
+            text-decoration: none;
+            color: white;
+            background: #333;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+
+        .social-link:hover { background: #444; }
+
+        /* Video de YouTube */
+        #videoContainer {
+            display: none;
+            margin-top: 20px;
         }
 
         .hidden { display: none !important; }
-
-        .menu-troll {
-            margin-top: 20px;
-            display: flex;
-            gap: 15px;
-            z-index: 10;
-        }
-
-        .btn-opcion {
-            padding: 10px 20px;
-            background: white;
-            color: black;
-            border: none;
-            cursor: pointer;
-            font-weight: bold;
-        }
     </style>
 </head>
 <body>
 
-    <video id="bgVideo" loop>
-        <source src="fondo.mp4" type="video/mp4">
-    </video>
+    <button class="main-btn" id="mainBtn">DEMIURGE</button>
 
-    <button id="mainBtn" class="main-button">TU NOMBRE AQUÍ</button>
-
-    <div id="menu" class="menu-troll hidden">
-        <button class="btn-opcion" onclick="alert('TikTok: @tu_usuario\nRoblox: tu_user')">REDES</button>
-        <button class="btn-opcion" id="btnMeme">VIDEO RANDOM</button>
+    <div class="menu-container" id="menuContainer">
+        <div class="card" id="redesBtn">
+            <h3>REDES</h3>
+        </div>
+        <div class="card" id="videoBtn">
+            <h3>VIDEO RANDOM</h3>
+        </div>
     </div>
 
-    <video id="memeVideo" style="width: 300px; margin-top: 20px; z-index: 10;" class="hidden" controls>
-        <source src="tu-video-random.mp4" type="video/mp4">
-    </video>
+    <div class="social-btns" id="socialBtns">
+        <a href="https://www.tiktok.com/@okumura.._" target="_blank" class="social-link">TIKTOK</a>
+        <a href="https://www.roblox.com/es/users/4060396620/profile" target="_blank" class="social-link">ROBLOX</a>
+    </div>
+
+    <div id="videoContainer">
+        <iframe id="ytVideo" width="350" height="200" 
+            src="https://www.youtube.com/embed/R7yswK6e_j8?enablejsapi=1" 
+            title="YouTube video player" frameborder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+            allowfullscreen>
+        </iframe>
+    </div>
 
     <script>
-        const mainBtn = document.getElementById('mainBtn');
-        const bgVideo = document.getElementById('bgVideo');
-        const menu = document.getElementById('menu');
-        const btnMeme = document.getElementById('btnMeme');
-        const memeVideo = document.getElementById('memeVideo');
-
-        mainBtn.addEventListener('click', () => {
-            // 1. Inicia el video de fondo con audio al hacer clic
-            bgVideo.play();
-            bgVideo.muted = false; 
-
-            // 2. Muestra el menú
-            menu.classList.remove('hidden');
-            mainBtn.classList.add('hidden');
-        });
-
-        btnMeme.addEventListener('click', () => {
-            memeVideo.classList.remove('hidden');
-            memeVideo.play();
-        });
-    </script>
-</body>
-</html>
+        const mainBtn = document.getElementById('mainBtn
