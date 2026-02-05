@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mis Notas</title>
+    <title>🫧 Explota Burbujas</title>
     <style>
         * {
             margin: 0;
@@ -15,89 +15,70 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
             min-height: 100vh;
-            padding: 20px;
-            color: #e0e0e0;
+            overflow: hidden;
+            position: relative;
         }
 
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        header {
+        .header {
             text-align: center;
-            margin-bottom: 40px;
             padding: 20px;
+            background: rgba(42, 42, 42, 0.8);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 10;
         }
 
         h1 {
-            font-size: 2.5em;
             color: #ffffff;
+            font-size: 2.5em;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
             margin-bottom: 10px;
         }
 
-        .subtitle {
-            color: #a0a0a0;
-            font-size: 1.1em;
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 15px;
+            flex-wrap: wrap;
         }
 
-        .note-input-section {
-            background: #2a2a2a;
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 30px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-            border: 1px solid #3a3a3a;
-        }
-
-        input[type="text"] {
-            width: 100%;
-            padding: 15px;
-            margin-bottom: 15px;
+        .stat-item {
             background: #1a1a1a;
+            padding: 12px 25px;
+            border-radius: 10px;
             border: 2px solid #404040;
-            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .stat-label {
+            color: #909090;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
             color: #ffffff;
-            font-size: 1.1em;
-            transition: all 0.3s ease;
+            font-size: 1.8em;
+            font-weight: bold;
         }
 
-        input[type="text"]:focus {
-            outline: none;
-            border-color: #666666;
-            box-shadow: 0 0 10px rgba(100, 100, 100, 0.3);
-        }
-
-        textarea {
-            width: 100%;
-            padding: 15px;
-            margin-bottom: 15px;
-            background: #1a1a1a;
-            border: 2px solid #404040;
-            border-radius: 8px;
-            color: #ffffff;
-            font-size: 1em;
-            min-height: 120px;
-            resize: vertical;
-            font-family: inherit;
-            transition: all 0.3s ease;
-        }
-
-        textarea:focus {
-            outline: none;
-            border-color: #666666;
-            box-shadow: 0 0 10px rgba(100, 100, 100, 0.3);
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+            flex-wrap: wrap;
         }
 
         button {
-            width: 100%;
-            padding: 15px;
+            padding: 12px 30px;
             background: linear-gradient(135deg, #4a4a4a 0%, #2a2a2a 100%);
             color: #ffffff;
             border: 2px solid #555555;
             border-radius: 8px;
-            font-size: 1.1em;
+            font-size: 1em;
             cursor: pointer;
             transition: all 0.3s ease;
             font-weight: 600;
@@ -114,193 +95,331 @@
             transform: translateY(0);
         }
 
-        .notes-list {
-            display: grid;
-            gap: 20px;
+        #canvas {
+            display: block;
+            cursor: crosshair;
+            position: absolute;
+            top: 0;
+            left: 0;
         }
 
-        .note-card {
-            background: #2a2a2a;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            border: 1px solid #3a3a3a;
-            transition: all 0.3s ease;
-            position: relative;
+        .particle {
+            position: absolute;
+            pointer-events: none;
+            animation: particle-fade 0.6s ease-out forwards;
         }
 
-        .note-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
-            border-color: #4a4a4a;
+        @keyframes particle-fade {
+            0% {
+                opacity: 1;
+                transform: translate(0, 0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(var(--tx), var(--ty)) scale(0);
+            }
         }
 
-        .note-title {
-            font-size: 1.4em;
-            color: #ffffff;
-            margin-bottom: 10px;
-            font-weight: 600;
-        }
-
-        .note-content {
-            color: #b0b0b0;
-            line-height: 1.6;
-            margin-bottom: 15px;
-        }
-
-        .note-date {
-            color: #707070;
-            font-size: 0.85em;
-            margin-bottom: 15px;
-        }
-
-        .delete-btn {
-            background: linear-gradient(135deg, #4a4a4a 0%, #2a2a2a 100%);
-            color: #ff6b6b;
-            border: 2px solid #555555;
-            padding: 8px 20px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.9em;
-            transition: all 0.3s ease;
-        }
-
-        .delete-btn:hover {
-            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
-            color: #ffffff;
-            border-color: #ff6b6b;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: #707070;
-        }
-
-        .empty-state-icon {
+        .combo {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             font-size: 4em;
-            margin-bottom: 20px;
+            font-weight: bold;
+            color: #ffffff;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+            pointer-events: none;
+            animation: combo-pop 0.5s ease-out;
+            z-index: 1000;
         }
 
-        ::placeholder {
-            color: #606060;
+        @keyframes combo-pop {
+            0% {
+                transform: translate(-50%, -50%) scale(0);
+                opacity: 0;
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.2);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0;
+            }
+        }
+
+        .instructions {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(42, 42, 42, 0.9);
+            padding: 15px 30px;
+            border-radius: 10px;
+            border: 2px solid #404040;
+            color: #b0b0b0;
+            text-align: center;
+            z-index: 10;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>📝 Mis Notas</h1>
-            <p class="subtitle">Organiza tus pensamientos</p>
-        </header>
-
-        <div class="note-input-section">
-            <input type="text" id="noteTitle" placeholder="Título de la nota...">
-            <textarea id="noteContent" placeholder="Escribe tu nota aquí..."></textarea>
-            <button onclick="addNote()">✨ Agregar Nota</button>
+    <div class="header">
+        <h1>🫧 Explota las Burbujas</h1>
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-label">Explotadas</div>
+                <div class="stat-value" id="score">0</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">Combo</div>
+                <div class="stat-value" id="combo">0x</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-label">Récord</div>
+                <div class="stat-value" id="highscore">0</div>
+            </div>
         </div>
+        <div class="controls">
+            <button onclick="addBubbles(10)">➕ Más Burbujas</button>
+            <button onclick="clearAll()">🧹 Limpiar Todo</button>
+            <button onclick="resetScore()">🔄 Reiniciar</button>
+        </div>
+    </div>
 
-        <div id="notesList" class="notes-list"></div>
+    <canvas id="canvas"></canvas>
+
+    <div class="instructions">
+        👆 Haz click en las burbujas para explotarlas | Explota varias seguidas para hacer combos 🔥
     </div>
 
     <script>
-        let notes = [];
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
 
-        function loadNotes() {
-            const savedNotes = localStorage.getItem('notes');
-            if (savedNotes) {
-                notes = JSON.parse(savedNotes);
-                displayNotes();
-            } else {
-                displayEmptyState();
+        let bubbles = [];
+        let score = 0;
+        let highscore = localStorage.getItem('bubbleHighscore') || 0;
+        let comboCount = 0;
+        let comboTimer = null;
+
+        document.getElementById('highscore').textContent = highscore;
+
+        class Bubble {
+            constructor(x, y, radius, color) {
+                this.x = x;
+                this.y = y;
+                this.radius = radius;
+                this.color = color;
+                this.vx = (Math.random() - 0.5) * 2;
+                this.vy = (Math.random() - 0.5) * 2;
+                this.wobble = Math.random() * Math.PI * 2;
+                this.wobbleSpeed = 0.05;
+                this.alpha = 0;
+                this.targetAlpha = 0.8;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.wobble += this.wobbleSpeed;
+
+                // Fade in
+                if (this.alpha < this.targetAlpha) {
+                    this.alpha += 0.02;
+                }
+
+                // Bounce off walls
+                if (this.x - this.radius < 0 || this.x + this.radius > canvas.width) {
+                    this.vx *= -1;
+                    this.x = Math.max(this.radius, Math.min(canvas.width - this.radius, this.x));
+                }
+                if (this.y - this.radius < 0 || this.y + this.radius > canvas.height) {
+                    this.vy *= -1;
+                    this.y = Math.max(this.radius, Math.min(canvas.height - this.radius, this.y));
+                }
+            }
+
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.alpha;
+
+                // Bubble body
+                const gradient = ctx.createRadialGradient(
+                    this.x - this.radius * 0.3,
+                    this.y - this.radius * 0.3,
+                    this.radius * 0.1,
+                    this.x,
+                    this.y,
+                    this.radius
+                );
+                gradient.addColorStop(0, this.color + 'dd');
+                gradient.addColorStop(0.6, this.color + '99');
+                gradient.addColorStop(1, this.color + '33');
+
+                ctx.fillStyle = gradient;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Shine effect
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+                ctx.beginPath();
+                ctx.arc(
+                    this.x - this.radius * 0.3,
+                    this.y - this.radius * 0.3,
+                    this.radius * 0.3,
+                    0,
+                    Math.PI * 2
+                );
+                ctx.fill();
+
+                // Border
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.stroke();
+
+                ctx.restore();
+            }
+
+            contains(x, y) {
+                const dx = x - this.x;
+                const dy = y - this.y;
+                return dx * dx + dy * dy <= this.radius * this.radius;
             }
         }
 
-        function saveNotes() {
-            localStorage.setItem('notes', JSON.stringify(notes));
+        function createBubble() {
+            const radius = 30 + Math.random() * 40;
+            const x = radius + Math.random() * (canvas.width - radius * 2);
+            const y = radius + Math.random() * (canvas.height - radius * 2);
+            
+            const colors = ['#6c63ff', '#ff6b9d', '#4ecdc4', '#95e1d3', '#ffd93d', '#a8e6cf'];
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            
+            return new Bubble(x, y, radius, color);
         }
 
-        function addNote() {
-            const title = document.getElementById('noteTitle').value.trim();
-            const content = document.getElementById('noteContent').value.trim();
-
-            if (title === '' || content === '') {
-                alert('Por favor, completa el título y el contenido de la nota.');
-                return;
-            }
-
-            const note = {
-                id: Date.now(),
-                title: title,
-                content: content,
-                date: new Date().toLocaleString('es-ES', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
-                })
-            };
-
-            notes.unshift(note);
-            saveNotes();
-            displayNotes();
-
-            document.getElementById('noteTitle').value = '';
-            document.getElementById('noteContent').value = '';
-        }
-
-        function deleteNote(id) {
-            notes = notes.filter(note => note.id !== id);
-            saveNotes();
-            if (notes.length === 0) {
-                displayEmptyState();
-            } else {
-                displayNotes();
+        function addBubbles(count) {
+            for (let i = 0; i < count; i++) {
+                bubbles.push(createBubble());
             }
         }
 
-        function displayNotes() {
-            const notesList = document.getElementById('notesList');
-            notesList.innerHTML = '';
+        function clearAll() {
+            bubbles = [];
+        }
 
-            notes.forEach(note => {
-                const noteCard = document.createElement('div');
-                noteCard.className = 'note-card';
-                noteCard.innerHTML = `
-                    <div class="note-title">${note.title}</div>
-                    <div class="note-date">${note.date}</div>
-                    <div class="note-content">${note.content}</div>
-                    <button class="delete-btn" onclick="deleteNote(${note.id})">🗑️ Eliminar</button>
-                `;
-                notesList.appendChild(noteCard);
+        function resetScore() {
+            score = 0;
+            comboCount = 0;
+            document.getElementById('score').textContent = score;
+            document.getElementById('combo').textContent = comboCount + 'x';
+        }
+
+        function createParticles(x, y, color) {
+            for (let i = 0; i < 8; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = x + 'px';
+                particle.style.top = y + 'px';
+                particle.style.width = '10px';
+                particle.style.height = '10px';
+                particle.style.borderRadius = '50%';
+                particle.style.background = color;
+                
+                const angle = (Math.PI * 2 * i) / 8;
+                const distance = 50 + Math.random() * 30;
+                const tx = Math.cos(angle) * distance;
+                const ty = Math.sin(angle) * distance;
+                
+                particle.style.setProperty('--tx', tx + 'px');
+                particle.style.setProperty('--ty', ty + 'px');
+                
+                document.body.appendChild(particle);
+                
+                setTimeout(() => particle.remove(), 600);
+            }
+        }
+
+        function showCombo(count) {
+            const comboEl = document.createElement('div');
+            comboEl.className = 'combo';
+            comboEl.textContent = count + 'x COMBO! 🔥';
+            document.body.appendChild(comboEl);
+            setTimeout(() => comboEl.remove(), 500);
+        }
+
+        function updateCombo() {
+            comboCount++;
+            document.getElementById('combo').textContent = comboCount + 'x';
+            
+            if (comboCount > 1 && comboCount % 5 === 0) {
+                showCombo(comboCount);
+            }
+            
+            clearTimeout(comboTimer);
+            comboTimer = setTimeout(() => {
+                comboCount = 0;
+                document.getElementById('combo').textContent = '0x';
+            }, 1500);
+        }
+
+        canvas.addEventListener('click', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            for (let i = bubbles.length - 1; i >= 0; i--) {
+                if (bubbles[i].contains(x, y)) {
+                    const bubble = bubbles[i];
+                    createParticles(e.clientX, e.clientY, bubble.color);
+                    bubbles.splice(i, 1);
+                    
+                    score++;
+                    updateCombo();
+                    document.getElementById('score').textContent = score;
+                    
+                    if (score > highscore) {
+                        highscore = score;
+                        localStorage.setItem('bubbleHighscore', highscore);
+                        document.getElementById('highscore').textContent = highscore;
+                    }
+                    
+                    // Play pop sound (visual feedback)
+                    canvas.style.transform = 'scale(0.98)';
+                    setTimeout(() => canvas.style.transform = 'scale(1)', 100);
+                    
+                    break;
+                }
+            }
+        });
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            bubbles.forEach(bubble => {
+                bubble.update();
+                bubble.draw();
             });
+
+            requestAnimationFrame(animate);
         }
 
-        function displayEmptyState() {
-            const notesList = document.getElementById('notesList');
-            notesList.innerHTML = `
-                <div class="empty-state">
-                    <div class="empty-state-icon">📭</div>
-                    <h2 style="color: #909090; margin-bottom: 10px;">No hay notas todavía</h2>
-                    <p>Crea tu primera nota para comenzar</p>
-                </div>
-            `;
-        }
-
-        document.getElementById('noteTitle').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                document.getElementById('noteContent').focus();
-            }
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
         });
 
-        document.getElementById('noteContent').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter' && e.ctrlKey) {
-                addNote();
-            }
-        });
-
-        loadNotes();
+        // Start with some bubbles
+        addBubbles(15);
+        animate();
     </script>
 </body>
 </html>
