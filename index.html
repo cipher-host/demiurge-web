@@ -1,506 +1,743 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🧠 Juego de Memoria</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VelozTest — Speed Check</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=JetBrains+Mono:wght@300;400;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #050508;
+      --panel: #0d0d14;
+      --border: #1a1a2e;
+      --accent: #00f5a0;
+      --accent2: #00c8f5;
+      --warn: #f5a000;
+      --danger: #f54040;
+      --text: #e8e8f0;
+      --muted: #55556a;
+      --glow: rgba(0, 245, 160, 0.18);
+    }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-            min-height: 100vh;
-            padding: 20px;
-            color: #e0e0e0;
-        }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Syne', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
 
-        header {
-            text-align: center;
-            margin-bottom: 30px;
-            padding: 20px;
-            background: rgba(42, 42, 42, 0.8);
-            border-radius: 15px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-        }
+    /* Animated background grid */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,245,160,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,245,160,0.04) 1px, transparent 1px);
+      background-size: 48px 48px;
+      animation: gridPan 25s linear infinite;
+      pointer-events: none;
+    }
 
-        h1 {
-            font-size: 2.5em;
-            color: #ffffff;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-            margin-bottom: 10px;
-        }
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse 70% 60% at 50% 50%, rgba(0,245,160,0.05) 0%, transparent 70%);
+      pointer-events: none;
+    }
 
-        .subtitle {
-            color: #a0a0a0;
-            font-size: 1.1em;
-            margin-bottom: 20px;
-        }
+    @keyframes gridPan {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(48px); }
+    }
 
-        .stats {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            margin-top: 20px;
-            flex-wrap: wrap;
-        }
+    /* Header */
+    header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 40px;
+      z-index: 100;
+      border-bottom: 1px solid var(--border);
+      background: rgba(5,5,8,0.7);
+      backdrop-filter: blur(12px);
+    }
 
-        .stat-box {
-            background: #1a1a1a;
-            padding: 15px 25px;
-            border-radius: 10px;
-            border: 2px solid #404040;
-            text-align: center;
-            min-width: 120px;
-        }
+    .logo {
+      font-size: 1.2rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      text-transform: uppercase;
+      text-shadow: 0 0 20px var(--glow);
+    }
 
-        .stat-label {
-            color: #909090;
-            font-size: 0.9em;
-            margin-bottom: 5px;
-        }
+    .logo span { color: var(--text); }
 
-        .stat-value {
-            color: #ffffff;
-            font-size: 2em;
-            font-weight: bold;
-        }
+    .header-info {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-align: right;
+      line-height: 1.6;
+    }
 
-        .controls {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 20px;
-            flex-wrap: wrap;
-        }
+    /* Main container */
+    main {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 40px;
+      padding: 20px;
+    }
 
-        button {
-            padding: 12px 30px;
-            background: linear-gradient(135deg, #4a4a4a 0%, #2a2a2a 100%);
-            color: #ffffff;
-            border: 2px solid #555555;
-            border-radius: 8px;
-            font-size: 1em;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-weight: 600;
-        }
+    /* Speedometer ring */
+    .speed-ring-container {
+      position: relative;
+      width: 280px;
+      height: 280px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
-        button:hover {
-            background: linear-gradient(135deg, #5a5a5a 0%, #3a3a3a 100%);
-            border-color: #666666;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
-        }
+    .speed-ring-container svg {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      transform: rotate(-90deg);
+    }
 
-        button:active {
-            transform: translateY(0);
-        }
+    .ring-bg {
+      fill: none;
+      stroke: var(--border);
+      stroke-width: 6;
+    }
 
-        .difficulty-selector {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 15px;
-        }
+    .ring-progress {
+      fill: none;
+      stroke: url(#ringGrad);
+      stroke-width: 6;
+      stroke-linecap: round;
+      stroke-dasharray: 785;
+      stroke-dashoffset: 785;
+      transition: stroke-dashoffset 0.15s linear;
+      filter: drop-shadow(0 0 8px var(--accent));
+    }
 
-        .difficulty-btn {
-            padding: 8px 20px;
-            font-size: 0.9em;
-        }
+    .speed-center {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 1;
+    }
 
-        .difficulty-btn.active {
-            background: linear-gradient(135deg, #6c63ff 0%, #5a52d5 100%);
-            border-color: #6c63ff;
-        }
+    .speed-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 4.5rem;
+      font-weight: 600;
+      color: var(--accent);
+      line-height: 1;
+      text-shadow: 0 0 30px var(--glow), 0 0 60px rgba(0,245,160,0.1);
+      letter-spacing: -2px;
+      transition: color 0.3s ease;
+    }
 
-        .game-board {
-            display: grid;
-            gap: 15px;
-            margin-top: 30px;
-            justify-content: center;
-        }
+    .speed-unit {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      color: var(--muted);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
 
-        .card {
-            width: 100px;
-            height: 100px;
-            position: relative;
-            cursor: pointer;
-            transform-style: preserve-3d;
-            transition: transform 0.6s;
-        }
+    .speed-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 8px;
+    }
 
-        .card.flipped {
-            transform: rotateY(180deg);
-        }
+    /* Status indicator */
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+    }
 
-        .card.matched {
-            opacity: 0.6;
-            cursor: default;
-        }
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--muted);
+      transition: all 0.3s ease;
+    }
 
-        .card-face {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            backface-visibility: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 12px;
-            font-size: 3em;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-        }
+    .status-dot.active {
+      background: var(--accent);
+      box-shadow: 0 0 12px var(--accent);
+      animation: pulse 1s ease-in-out infinite;
+    }
 
-        .card-front {
-            background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
-            border: 3px solid #404040;
-        }
+    .status-dot.done {
+      background: var(--accent);
+      box-shadow: 0 0 8px var(--accent);
+      animation: none;
+    }
 
-        .card-back {
-            background: linear-gradient(135deg, #4a4a4a 0%, #3a3a3a 100%);
-            border: 3px solid #555555;
-            transform: rotateY(180deg);
-        }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.4); opacity: 0.6; }
+    }
 
-        .card:hover:not(.matched) .card-front {
-            border-color: #666666;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
-        }
+    /* Stats grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      width: 100%;
+      max-width: 520px;
+    }
 
-        .win-message {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0);
-            background: rgba(42, 42, 42, 0.98);
-            padding: 40px 60px;
-            border-radius: 20px;
-            border: 3px solid #6c63ff;
-            text-align: center;
-            z-index: 1000;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
-            transition: transform 0.5s ease;
-        }
+    .stat-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      position: relative;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.4s ease, transform 0.4s ease, border-color 0.3s ease;
+    }
 
-        .win-message.show {
-            transform: translate(-50%, -50%) scale(1);
-        }
+    .stat-card.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
 
-        .win-message h2 {
-            font-size: 2.5em;
-            color: #6c63ff;
-            margin-bottom: 20px;
-            text-shadow: 0 0 20px rgba(108, 99, 255, 0.5);
-        }
+    .stat-card:hover { border-color: rgba(0,245,160,0.3); }
 
-        .win-message p {
-            font-size: 1.2em;
-            color: #b0b0b0;
-            margin-bottom: 25px;
-        }
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
 
-        .win-stats {
-            display: flex;
-            gap: 30px;
-            justify-content: center;
-            margin-bottom: 25px;
-        }
+    .stat-card.lit::before { opacity: 1; }
 
-        .win-stat {
-            text-align: center;
-        }
+    .stat-icon {
+      font-size: 1rem;
+      margin-bottom: 2px;
+    }
 
-        .win-stat-label {
-            color: #909090;
-            font-size: 0.9em;
-        }
+    .stat-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1;
+    }
 
-        .win-stat-value {
-            color: #ffffff;
-            font-size: 2em;
-            font-weight: bold;
-        }
+    .stat-lbl {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
 
-        @keyframes cardShake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
-        }
+    /* Progress bar */
+    .progress-wrap {
+      width: 100%;
+      max-width: 520px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
 
-        .card.shake {
-            animation: cardShake 0.4s;
-        }
+    .progress-bar {
+      height: 3px;
+      background: var(--border);
+      border-radius: 99px;
+      overflow: hidden;
+    }
 
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      border-radius: 99px;
+      transition: width 0.2s linear;
+      box-shadow: 0 0 12px var(--accent);
+    }
 
-        .card.pulse {
-            animation: pulse 0.3s;
-        }
+    .progress-info {
+      display: flex;
+      justify-content: space-between;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--muted);
+    }
 
-        .timer {
-            color: #6c63ff;
-        }
+    /* Button */
+    .btn-start {
+      background: transparent;
+      border: 2px solid var(--accent);
+      color: var(--accent);
+      font-family: 'Syne', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      padding: 14px 48px;
+      border-radius: 8px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.25s ease;
+    }
 
-        @media (max-width: 600px) {
-            .card {
-                width: 70px;
-                height: 70px;
-            }
-            
-            .card-face {
-                font-size: 2em;
-            }
-        }
-    </style>
+    .btn-start::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--accent);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s ease;
+      z-index: -1;
+    }
+
+    .btn-start:hover {
+      color: var(--bg);
+      box-shadow: 0 0 30px var(--glow);
+    }
+
+    .btn-start:hover::before { transform: scaleX(1); }
+
+    .btn-start:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    /* Rating badge */
+    .rating-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 20px;
+      border-radius: 99px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      border: 1px solid;
+      opacity: 0;
+      transform: scale(0.9);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+
+    .rating-badge.show {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .rating-badge.excellent { border-color: var(--accent); color: var(--accent); background: rgba(0,245,160,0.08); }
+    .rating-badge.good { border-color: var(--accent2); color: var(--accent2); background: rgba(0,200,245,0.08); }
+    .rating-badge.average { border-color: var(--warn); color: var(--warn); background: rgba(245,160,0,0.08); }
+    .rating-badge.poor { border-color: var(--danger); color: var(--danger); background: rgba(245,64,64,0.08); }
+
+    /* Footer */
+    footer {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 32px;
+      padding: 16px 40px;
+      border-top: 1px solid var(--border);
+      background: rgba(5,5,8,0.7);
+      backdrop-filter: blur(12px);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--muted);
+    }
+
+    .footer-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .footer-dot {
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--muted);
+    }
+
+    /* Animated scan line */
+    .scan-line {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      opacity: 0;
+      z-index: 200;
+      animation: none;
+    }
+
+    .scan-line.running {
+      opacity: 0.6;
+      animation: scan 2s linear infinite;
+    }
+
+    @keyframes scan {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(100vh); }
+    }
+
+  </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>🧠 Juego de Memoria</h1>
-            <p class="subtitle">Encuentra todas las parejas de cartas</p>
-            
-            <div class="stats">
-                <div class="stat-box">
-                    <div class="stat-label">Movimientos</div>
-                    <div class="stat-value" id="moves">0</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-label">Parejas</div>
-                    <div class="stat-value" id="pairs">0/<span id="totalPairs">8</span></div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-label">Tiempo</div>
-                    <div class="stat-value timer" id="timer">0:00</div>
-                </div>
-            </div>
 
-            <div class="difficulty-selector">
-                <button class="difficulty-btn active" onclick="setDifficulty('easy')">Fácil (12)</button>
-                <button class="difficulty-btn" onclick="setDifficulty('medium')">Medio (16)</button>
-                <button class="difficulty-btn" onclick="setDifficulty('hard')">Difícil (20)</button>
-            </div>
+<div class="scan-line" id="scanLine"></div>
 
-            <div class="controls">
-                <button onclick="startGame()">🎮 Nuevo Juego</button>
-            </div>
-        </header>
+<header>
+  <div class="logo">Veloz<span>Test</span></div>
+  <div class="header-info" id="connectionInfo">
+    IP: — &nbsp; ISP: —<br>
+    Servidor: —
+  </div>
+</header>
 
-        <div class="game-board" id="gameBoard"></div>
+<main>
+  <div class="speed-ring-container">
+    <svg viewBox="0 0 280 280" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#00f5a0" />
+          <stop offset="100%" stop-color="#00c8f5" />
+        </linearGradient>
+      </defs>
+      <circle class="ring-bg" cx="140" cy="140" r="125" />
+      <circle class="ring-progress" id="ringProgress" cx="140" cy="140" r="125" />
+    </svg>
+    <div class="speed-center">
+      <div class="speed-value" id="speedValue">—</div>
+      <div class="speed-unit">Mbps</div>
+      <div class="speed-label" id="speedLabel">Descarga</div>
     </div>
+  </div>
 
-    <div class="win-message" id="winMessage">
-        <h2>🎉 ¡Felicidades!</h2>
-        <p>¡Has completado el juego!</p>
-        <div class="win-stats">
-            <div class="win-stat">
-                <div class="win-stat-label">Movimientos</div>
-                <div class="win-stat-value" id="finalMoves">0</div>
-            </div>
-            <div class="win-stat">
-                <div class="win-stat-label">Tiempo</div>
-                <div class="win-stat-value" id="finalTime">0:00</div>
-            </div>
-        </div>
-        <button onclick="closeWinMessage()">Jugar de Nuevo</button>
+  <div class="status" id="statusEl">
+    <div class="status-dot" id="statusDot"></div>
+    <span id="statusText">Listo para iniciar</span>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card" id="card-down">
+      <div class="stat-icon">↓</div>
+      <div class="stat-val" id="dl-val">—</div>
+      <div class="stat-lbl">Descarga Mbps</div>
     </div>
+    <div class="stat-card" id="card-up">
+      <div class="stat-icon">↑</div>
+      <div class="stat-val" id="ul-val">—</div>
+      <div class="stat-lbl">Subida Mbps</div>
+    </div>
+    <div class="stat-card" id="card-ping">
+      <div class="stat-icon">◈</div>
+      <div class="stat-val" id="ping-val">—</div>
+      <div class="stat-lbl">Ping ms</div>
+    </div>
+    <div class="stat-card" id="card-jitter">
+      <div class="stat-icon">≈</div>
+      <div class="stat-val" id="jitter-val">—</div>
+      <div class="stat-lbl">Jitter ms</div>
+    </div>
+    <div class="stat-card" id="card-loss">
+      <div class="stat-icon">▽</div>
+      <div class="stat-val" id="loss-val">—</div>
+      <div class="stat-lbl">Pérd. paquetes</div>
+    </div>
+    <div class="stat-card" id="card-buf">
+      <div class="stat-icon">⬡</div>
+      <div class="stat-val" id="buf-val">—</div>
+      <div class="stat-lbl">Bufferbloat</div>
+    </div>
+  </div>
 
-    <script>
-        const emojis = ['🎮', '🎯', '🎨', '🎭', '🎪', '🎸', '🎺', '🎹', '⚽', '🏀', '🎾', '🏐', '🎱', '🎳', '🏆', '🎖️', '🚀', '✈️', '🚁', '⛵'];
-        
-        let cards = [];
-        let flippedCards = [];
-        let matchedPairs = 0;
-        let moves = 0;
-        let timerInterval = null;
-        let seconds = 0;
-        let gameStarted = false;
-        let difficulty = 'easy';
-        let pairCount = 6;
-        let canFlip = true;
+  <div class="progress-wrap" id="progressWrap" style="display:none">
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="progress-info">
+      <span id="progressPhase">Iniciando…</span>
+      <span id="progressPct">0%</span>
+    </div>
+  </div>
 
-        function setDifficulty(level) {
-            difficulty = level;
-            
-            document.querySelectorAll('.difficulty-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            event.target.classList.add('active');
-            
-            if (level === 'easy') pairCount = 6;
-            else if (level === 'medium') pairCount = 8;
-            else if (level === 'hard') pairCount = 10;
-            
-            document.getElementById('totalPairs').textContent = pairCount;
-            startGame();
-        }
+  <div class="rating-badge" id="ratingBadge"></div>
 
-        function shuffle(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-            return array;
-        }
+  <button class="btn-start" id="startBtn" onclick="runTest()">Iniciar Test</button>
+</main>
 
-        function createCards() {
-            const selectedEmojis = emojis.slice(0, pairCount);
-            cards = [...selectedEmojis, ...selectedEmojis];
-            shuffle(cards);
-        }
+<footer>
+  <div class="footer-item"><div class="footer-dot"></div> VelozTest v2.4</div>
+  <div class="footer-item"><div class="footer-dot"></div> WebRTC Simulation</div>
+  <div class="footer-item"><div class="footer-dot"></div> <span id="footerTime"></span></div>
+</footer>
 
-        function startGame() {
-            // Reset game state
-            matchedPairs = 0;
-            moves = 0;
-            seconds = 0;
-            flippedCards = [];
-            gameStarted = false;
-            canFlip = true;
-            
-            // Clear timer
-            if (timerInterval) {
-                clearInterval(timerInterval);
-                timerInterval = null;
-            }
-            
-            // Update stats
-            document.getElementById('moves').textContent = moves;
-            document.getElementById('pairs').textContent = `0/${pairCount}`;
-            document.getElementById('timer').textContent = '0:00';
-            
-            // Create and render cards
-            createCards();
-            renderBoard();
-        }
+<script>
+  // Update clock
+  function updateClock() {
+    const now = new Date();
+    document.getElementById('footerTime').textContent =
+      now.toLocaleTimeString('es-ES', { hour12: false });
+  }
+  updateClock();
+  setInterval(updateClock, 1000);
 
-        function renderBoard() {
-            const board = document.getElementById('gameBoard');
-            board.innerHTML = '';
-            
-            // Set grid columns based on difficulty
-            let columns = 4;
-            if (difficulty === 'medium') columns = 4;
-            if (difficulty === 'hard') columns = 5;
-            board.style.gridTemplateColumns = `repeat(${columns}, 100px)`;
-            
-            cards.forEach((emoji, index) => {
-                const card = document.createElement('div');
-                card.className = 'card';
-                card.dataset.index = index;
-                card.innerHTML = `
-                    <div class="card-face card-front">❓</div>
-                    <div class="card-face card-back">${emoji}</div>
-                `;
-                card.addEventListener('click', () => flipCard(index));
-                board.appendChild(card);
-            });
-        }
+  // Simulate connection info
+  const isps = ['Claro Fibra', 'Telmex', 'Movistar', 'Izzi', 'AT&T Mexico', 'Totalplay'];
+  const servers = ['Ciudad de México', 'Guadalajara', 'Monterrey', 'Miami FL'];
 
-        function startTimer() {
-            if (!gameStarted) {
-                gameStarted = true;
-                timerInterval = setInterval(() => {
-                    seconds++;
-                    const mins = Math.floor(seconds / 60);
-                    const secs = seconds % 60;
-                    document.getElementById('timer').textContent = 
-                        `${mins}:${secs.toString().padStart(2, '0')}`;
-                }, 1000);
-            }
-        }
+  function randomIP() {
+    return `${rnd(100,200)}.${rnd(0,255)}.${rnd(0,255)}.${rnd(1,254)}`;
+  }
 
-        function flipCard(index) {
-            if (!canFlip) return;
-            
-            const cardElement = document.querySelector(`[data-index="${index}"]`);
-            
-            if (cardElement.classList.contains('flipped') || 
-                cardElement.classList.contains('matched')) {
-                return;
-            }
-            
-            startTimer();
-            
-            cardElement.classList.add('flipped');
-            cardElement.classList.add('pulse');
-            setTimeout(() => cardElement.classList.remove('pulse'), 300);
-            
-            flippedCards.push({ index, emoji: cards[index], element: cardElement });
-            
-            if (flippedCards.length === 2) {
-                canFlip = false;
-                moves++;
-                document.getElementById('moves').textContent = moves;
-                checkMatch();
-            }
-        }
+  function rnd(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+  function rndF(min, max, dec=1) { return (Math.random() * (max - min) + min).toFixed(dec); }
 
-        function checkMatch() {
-            const [card1, card2] = flippedCards;
-            
-            if (card1.emoji === card2.emoji) {
-                // Match found!
-                setTimeout(() => {
-                    card1.element.classList.add('matched');
-                    card2.element.classList.add('matched');
-                    matchedPairs++;
-                    document.getElementById('pairs').textContent = `${matchedPairs}/${pairCount}`;
-                    
-                    flippedCards = [];
-                    canFlip = true;
-                    
-                    if (matchedPairs === pairCount) {
-                        setTimeout(() => showWinMessage(), 500);
-                    }
-                }, 600);
-            } else {
-                // No match
-                setTimeout(() => {
-                    card1.element.classList.add('shake');
-                    card2.element.classList.add('shake');
-                }, 600);
-                
-                setTimeout(() => {
-                    card1.element.classList.remove('flipped', 'shake');
-                    card2.element.classList.remove('flipped', 'shake');
-                    flippedCards = [];
-                    canFlip = true;
-                }, 1200);
-            }
-        }
+  // Ring progress
+  const CIRCUMFERENCE = 2 * Math.PI * 125; // ≈785
+  function setRing(pct) {
+    const offset = CIRCUMFERENCE - (pct / 100) * CIRCUMFERENCE;
+    document.getElementById('ringProgress').style.strokeDashoffset = offset;
+  }
 
-        function showWinMessage() {
-            clearInterval(timerInterval);
-            
-            const mins = Math.floor(seconds / 60);
-            const secs = seconds % 60;
-            const timeString = `${mins}:${secs.toString().padStart(2, '0')}`;
-            
-            document.getElementById('finalMoves').textContent = moves;
-            document.getElementById('finalTime').textContent = timeString;
-            document.getElementById('winMessage').classList.add('show');
-        }
+  // Speed color
+  function setSpeedColor(mbps) {
+    const el = document.getElementById('speedValue');
+    if (mbps >= 100) el.style.color = 'var(--accent)';
+    else if (mbps >= 30) el.style.color = 'var(--accent2)';
+    else if (mbps >= 10) el.style.color = 'var(--warn)';
+    else el.style.color = 'var(--danger)';
+  }
 
-        function closeWinMessage() {
-            document.getElementById('winMessage').classList.remove('show');
-            startGame();
-        }
+  function setStatus(text, active = false, done = false) {
+    document.getElementById('statusText').textContent = text;
+    const dot = document.getElementById('statusDot');
+    dot.className = 'status-dot' + (active ? ' active' : done ? ' done' : '');
+  }
 
-        // Initialize game
-        startGame();
-    </script>
+  function showCard(id, delay = 0) {
+    setTimeout(() => {
+      const c = document.getElementById(id);
+      c.classList.add('visible');
+      setTimeout(() => c.classList.add('lit'), 300);
+    }, delay);
+  }
+
+  function setProgress(pct, phase) {
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressPct').textContent = Math.round(pct) + '%';
+    document.getElementById('progressPhase').textContent = phase;
+  }
+
+  function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+  async function animateValue(elementId, from, to, duration, suffix = '') {
+    const el = document.getElementById(elementId);
+    const steps = 40;
+    const step = (to - from) / steps;
+    const delay = duration / steps;
+    let current = from;
+    for (let i = 0; i < steps; i++) {
+      current += step;
+      el.textContent = Math.round(current) + suffix;
+      await sleep(delay);
+    }
+    el.textContent = Math.round(to) + suffix;
+  }
+
+  async function animateSpeed(from, to, duration) {
+    const el = document.getElementById('speedValue');
+    const steps = 60;
+    const step = (to - from) / steps;
+    const delay = duration / steps;
+    let current = from;
+    for (let i = 0; i < steps; i++) {
+      current = Math.max(0, current + step + (Math.random() - 0.5) * 5);
+      el.textContent = Math.max(0, current).toFixed(1);
+      setRing((current / 300) * 100);
+      setSpeedColor(current);
+      await sleep(delay);
+    }
+    el.textContent = to.toFixed(1);
+    setRing((to / 300) * 100);
+    setSpeedColor(to);
+  }
+
+  function getRating(dl) {
+    if (dl >= 100) return { label: '⚡ Excelente', cls: 'excellent' };
+    if (dl >= 50)  return { label: '✓ Buena', cls: 'good' };
+    if (dl >= 15)  return { label: '◎ Aceptable', cls: 'average' };
+    return { label: '⚠ Lenta', cls: 'poor' };
+  }
+
+  async function runTest() {
+    const btn = document.getElementById('startBtn');
+    const badge = document.getElementById('ratingBadge');
+    const progress = document.getElementById('progressWrap');
+    const scanLine = document.getElementById('scanLine');
+
+    // Reset
+    btn.disabled = true;
+    badge.className = 'rating-badge';
+    badge.textContent = '';
+    document.getElementById('speedValue').textContent = '0';
+    document.getElementById('speedValue').style.color = 'var(--accent)';
+    setRing(0);
+    document.getElementById('dl-val').textContent = '—';
+    document.getElementById('ul-val').textContent = '—';
+    document.getElementById('ping-val').textContent = '—';
+    document.getElementById('jitter-val').textContent = '—';
+    document.getElementById('loss-val').textContent = '—';
+    document.getElementById('buf-val').textContent = '—';
+
+    ['card-down','card-up','card-ping','card-jitter','card-loss','card-buf'].forEach(id => {
+      const c = document.getElementById(id);
+      c.classList.remove('visible','lit');
+    });
+
+    // Show connection info
+    document.getElementById('connectionInfo').innerHTML =
+      `IP: ${randomIP()} &nbsp; ISP: ${isps[rnd(0,isps.length-1)]}<br>Servidor: ${servers[rnd(0,servers.length-1)]}`;
+
+    progress.style.display = 'flex';
+    scanLine.classList.add('running');
+
+    // ── PHASE 1: PING ──────────────────────────────────
+    setStatus('Midiendo latencia…', true);
+    document.getElementById('speedLabel').textContent = 'Ping';
+    setProgress(5, 'Calculando ping…');
+
+    const pingVal = rnd(4, 35);
+    const jitterVal = rnd(1, 12);
+    const lossVal = (Math.random() < 0.3 ? rndF(0.1, 1.5) : '0.0');
+
+    for (let i = 0; i <= 100; i += 10) {
+      await sleep(60);
+      setProgress(5 + i * 0.1, 'Calculando ping…');
+      document.getElementById('speedValue').textContent = Math.round(i * pingVal / 100);
+      setRing(i * 0.3);
+    }
+
+    document.getElementById('speedValue').textContent = pingVal;
+    document.getElementById('ping-val').textContent = pingVal + ' ms';
+    document.getElementById('jitter-val').textContent = jitterVal + ' ms';
+    document.getElementById('loss-val').textContent = lossVal + '%';
+    setRing(15);
+    showCard('card-ping', 0);
+    showCard('card-jitter', 150);
+    showCard('card-loss', 300);
+    await sleep(600);
+
+    // ── PHASE 2: DOWNLOAD ──────────────────────────────
+    setStatus('Midiendo descarga…', true);
+    document.getElementById('speedLabel').textContent = 'Descarga';
+    setProgress(15, 'Test de descarga…');
+
+    const dlTarget = rnd(30, 280);
+    await animateSpeed(0, dlTarget, 3000);
+
+    // Ramp progress bar during download
+    for (let p = 15; p <= 60; p += 1) {
+      await sleep(25);
+      setProgress(p, 'Test de descarga…');
+    }
+
+    document.getElementById('dl-val').textContent = dlTarget + ' Mbps';
+    showCard('card-down', 0);
+    setStatus('Descarga completa', false, true);
+    await sleep(500);
+
+    // ── PHASE 3: UPLOAD ────────────────────────────────
+    setStatus('Midiendo subida…', true);
+    document.getElementById('speedLabel').textContent = 'Subida';
+    setProgress(62, 'Test de subida…');
+
+    const ulTarget = Math.round(dlTarget * rndF(0.3, 0.7));
+    await animateSpeed(dlTarget, ulTarget, 2500);
+
+    for (let p = 62; p <= 95; p += 1) {
+      await sleep(20);
+      setProgress(p, 'Test de subida…');
+    }
+
+    document.getElementById('ul-val').textContent = ulTarget + ' Mbps';
+    showCard('card-up', 0);
+
+    // Bufferbloat grade
+    const bbGrades = ['A', 'A+', 'B', 'C'];
+    const bb = pingVal < 15 ? bbGrades[rnd(0,1)] : bbGrades[rnd(1,3)];
+    document.getElementById('buf-val').textContent = bb;
+    showCard('card-buf', 200);
+
+    // ── FINISH ─────────────────────────────────────────
+    setProgress(100, 'Test completado');
+    await sleep(300);
+
+    // Show final download speed
+    document.getElementById('speedValue').textContent = dlTarget.toFixed(1);
+    document.getElementById('speedLabel').textContent = 'Descarga';
+    setRing((dlTarget / 300) * 100);
+    setSpeedColor(dlTarget);
+
+    setStatus('Test completado', false, true);
+    scanLine.classList.remove('running');
+    progress.style.display = 'none';
+
+    // Rating
+    const rating = getRating(dlTarget);
+    badge.textContent = rating.label;
+    badge.className = 'rating-badge ' + rating.cls;
+    setTimeout(() => badge.classList.add('show'), 100);
+
+    btn.disabled = false;
+    btn.textContent = 'Repetir Test';
+  }
+</script>
 </body>
 </html>
